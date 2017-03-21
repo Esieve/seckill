@@ -6,9 +6,9 @@
 
     <update id="reduceNumber">
         UPDATE
-          seckill
+        seckill
         SET
-          number = number-1
+        number = number-1
         WHERE seckill_id = #{seckillId}
         AND start_time <![CDATA[ <= ]]> #{killTime}
         AND end_time >= #{killTime}

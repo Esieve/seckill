@@ -27,29 +27,6 @@ public class SeckillDaoTest {
 
     @Test
     public void reduceNumber() throws Exception {
-        /**
-         * SQL: UPDATE
-         * seckill
-         * SET
-         * number = number-1;
-         * WHERE seckill_id = ?
-         * AND start_time   <=   ?
-         * AND end_time >= ?
-         * AND number > 0;
-         ### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException:
-         You have an error in your SQL syntax;
-         check the manual that corresponds to your MySQL server version for the right syntax to use near
-         'WHERE seckill_id = 1000
-         AND start_time   <=   '2017-03-19 11:55:00.483'
-         ' at line 5
-         ; bad SQL grammar [];
-         nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException:
-         You have an error in your SQL syntax;
-         check the manual that corresponds to your MySQL server version for the right syntax to use near
-         'WHERE seckill_id = 1000
-         AND start_time   <=   '2017-03-19 11:55:00.483'
-         ' at line 5
-         */
         Date killTime = new Date();
         int result = seckillDao.reduceNumber(1000L, killTime);
         System.out.println(result);

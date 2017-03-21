@@ -49,7 +49,7 @@ public class SeckillServiceTest {
     @Test
     public void executeSeckill() throws Exception {
         try {
-            SeckillExecution execution = seckillService.executeSeckill(1000L, 123L, null);
+            SeckillExecution execution = seckillService.executeSeckill(1000L, 123L, "c233c0d309fc22b02373e494c30bf225");
             logger.info("{}", execution);
         } catch (RepeatKillException e) {
             logger.error(e.getMessage());

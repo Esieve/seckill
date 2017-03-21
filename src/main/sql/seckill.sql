@@ -28,7 +28,7 @@ VALUES
 CREATE TABLE success_killed (
   seckill_id  BIGINT    NOT NULL,
   user_phone  BIGINT    NOT NULL,
-  state       TINYINT   NOT NULL DEFAULT -1,
+  state       TINYINT   NOT NULL DEFAULT 0,
   create_time TIMESTAMP NOT NULL,
   PRIMARY KEY (seckill_id, user_phone),
   KEY idx_create_time(create_time)
