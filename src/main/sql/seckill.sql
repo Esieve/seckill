@@ -1,37 +1,49 @@
-CREATE DATABASE seckill;
-USE seckill;
+DELIMITER $$
 
-CREATE TABLE seckill (
-  seckill_id  BIGINT       NOT NULL AUTO_INCREMENT,
-  name        VARCHAR(120) NOT NULL,
-  number      INT          NOT NULL,
-  start_time  TIMESTAMP    NOT NULL,
-  end_time    TIMESTAMP    NOT NULL,
-  create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (seckill_id),
-  KEY idx_start_time(start_time),
-  KEY idx_end_time(end_time),
-  KEY idx_create_time(create_time)
-)
-  ENGINE = InnoDB
-  AUTO_INCREMENT = 1000
-  DEFAULT CHARSET = utf8;
+CREATE PROCEDURE seckill.execute_seckill
+  (IN v_seckill_id BIGINT, IN v_phone BIGINT, IN v_kill_time DATETIME, OUT r_result INT)
+  BEGIN
+    DECLARE insert_count INT DEFAULT 0;
+    START TRANSACTION;
+    INSERT IGNORE INTO success_killed (seckill_id, user_phone, create_time)
+    VALUES (v_seckill_id, v_phone, v_kill_time);
+    SELECT row_count()
+    INTO insert_count;
+    IF (insert_count = 0)
+    THEN
+      ROLLBACK;
+      SET r_result = -1;
+    ELSEIF (insert_count < 0)
+      THEN
+        ROLLBACK;
+        SET r_result = -2;
+    ELSE
+      UPDATE seckill
+      SET number = number - 1
+      WHERE seckill_id = v_seckill_id
+            AND end_time > v_kill_time
+            AND start_time < v_kill_time
+            AND number > 0;
+      SELECT row_count()
+      INTO insert_count;
+      IF (insert_count = 0)
+      THEN
+        ROLLBACK;
+        SET r_result = 0;
+      ELSEIF (insert_count < 0)
+        THEN
+          ROLLBACK;
+          SET r_result = -2;
+      ELSE
+        COMMIT;
+        SET r_result = 1;
+      END IF;
+    END IF;
+  END;
+$$
 
-INSERT INTO
-  seckill (name, number, start_time, end_time)
-VALUES
-  ('1000元秒杀iphone7', 100, '2017-3-1 00:00:00', '2017-6-1 00:00:00'),
-  ('500元秒杀ipad2', 100, '2017-3-1 00:00:00', '2017-6-1 00:00:00'),
-  ('300元秒杀小米6', 100, '2017-3-1 00:00:00', '2017-6-1 00:00:00'),
-  ('200元秒杀红米note', 100, '2017-3-1 00:00:00', '2017-6-1 00:00:00');
+DELIMITER ;
 
-CREATE TABLE success_killed (
-  seckill_id  BIGINT    NOT NULL,
-  user_phone  BIGINT    NOT NULL,
-  state       TINYINT   NOT NULL DEFAULT 0,
-  create_time TIMESTAMP NOT NULL,
-  PRIMARY KEY (seckill_id, user_phone),
-  KEY idx_create_time(create_time)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+SET @result = -3;
+CALL execute_seckill(1003,18661399910,now(),@result);
+SELECT @result;

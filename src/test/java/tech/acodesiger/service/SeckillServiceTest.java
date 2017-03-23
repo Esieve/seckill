@@ -37,7 +37,7 @@ public class SeckillServiceTest {
     @Test
     public void getSeckillById() throws Exception {
         Seckill seckill = seckillService.getSeckillById(1000L);
-        logger.info("{}", seckill);
+        logger.info("apt{}", seckill);
     }
 
     @Test
@@ -56,6 +56,12 @@ public class SeckillServiceTest {
         } catch (SeckillCloseException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    @Test
+    public void executeSeckillByProcedure() {
+        SeckillExecution execution = seckillService.executeSeckillByProcedure(1000L, 124L, "c233c0d309fc22b02373e494c30bf225");
+        logger.info("{}", execution);
     }
 
 }
